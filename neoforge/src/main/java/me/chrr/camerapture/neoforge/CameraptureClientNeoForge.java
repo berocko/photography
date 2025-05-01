@@ -213,5 +213,11 @@ public class CameraptureClientNeoForge {
                 event.setNewFovModifier(PictureTaker.getInstance().getFovModifier());
             }
         }
+
+        /// Process any received pictures once per tick.
+        @SubscribeEvent
+        public void onClientTick(ClientTickEvent.Pre event) {
+            ClientPictureStore.getInstance().processQueue();
+        }
     }
 }
