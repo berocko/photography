@@ -19,13 +19,24 @@ repositories {
 }
 
 dependencies {
-    // Include Fabric loader to have access to the @Environment annotation.
-    modCompileOnlyApi("net.fabricmc:fabric-loader:${rootProject.prop("fabric", "loaderVersion")}")
-
     // Compat dependencies
     modCompileOnlyApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.prop("clothconfig", "version")}")
     modCompileOnlyApi("maven.modrinth:jade:${rootProject.prop("jade", "version")}+fabric")
     modCompileOnlyApi("maven.modrinth:first-person-model:${rootProject.prop("firstpersonmodel", "version")}")
 
     implementation("dev.matrixlab:webp4j:1.3.0")
+
+    testImplementation(platform("org.junit:junit-bom:5.11.4"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
+// Loom 1.7 injects the mapped Minecraft classpath only into the main source set.
+// Domain codec tests need that same mapped classpath without adding a loader dependency.
+sourceSets.test {
+    compileClasspath += sourceSets.main.get().compileClasspath
+    runtimeClasspath += sourceSets.main.get().runtimeClasspath
 }

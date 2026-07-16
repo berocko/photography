@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "source": {
+    "repository": "Jahrome907/minecraft-agent-skills",
+    "branch": "main",
+    "commit": "82c38979adcbf6244c4ee835e26c3460ea1f97e4",
+    "retrieved_at": "2026-07-15T09:11:03Z"
+  },
+  "install_scope": "project",
+  "install_path": ".agents/skills",
+  "skills": [
+    "minecraft-modding",
+    "minecraft-testing",
+    "minecraft-resource-pack",
+    "minecraft-ci-release",
+    "minecraft-multiloader"
+  ]
+}

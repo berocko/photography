@@ -3,6 +3,11 @@ package me.chrr.camerapture.config;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import me.chrr.camerapture.domain.config.CurrencyConfig;
+import me.chrr.camerapture.domain.config.EntityValueConfig;
+import me.chrr.camerapture.domain.config.GameplayConfig;
+import me.chrr.camerapture.domain.config.ScoringConfig;
+import net.minecraft.util.Identifier;
 
 public class Config {
     public static Config DEFAULT = new Config();
@@ -26,7 +31,7 @@ public class Config {
 
     /// Server-specific config options.
     public static class Server {
-        public int version = 5;
+        public int version = 6;
 
         public int maxImageBytes = 500_000;
         public int maxImageResolution = 1920;
@@ -35,6 +40,7 @@ public class Config {
         public boolean checkFramePosition = false;
 
         public PermissionLevels permissionLevels = new PermissionLevels();
+        public Expedition expedition = new Expedition();
 
         @DeprecatedConfigOption
         private boolean allowUploading = true;
@@ -43,8 +49,76 @@ public class Config {
             if (this.version < 5) {
                 this.permissionLevels.upload = this.allowUploading ? 0 : 4;
             }
+            if (this.expedition == null) {
+                this.expedition = new Expedition();
+            }
 
             this.version = DEFAULT.server.version;
+        }
+
+        /** Validated immutable view consumed by server-authoritative gameplay services. */
+        public GameplayConfig gameplayConfig() {
+            return new GameplayConfig(
+                    GameplayConfig.CURRENT_SCHEMA_VERSION,
+                    new CurrencyConfig(Identifier.of(expedition.currency.provider), expedition.currency.teamShared),
+                    new EntityValueConfig(
+                            expedition.entityValues.healthWeight,
+                            expedition.entityValues.armorWeight,
+                            expedition.entityValues.attackWeight,
+                            expedition.entityValues.specialWeight,
+                            expedition.entityValues.minimumValue,
+                            expedition.entityValues.maximumValue
+                    ),
+                    new ScoringConfig(
+                            expedition.rewards.algorithmVersion,
+                            expedition.rewards.secondaryWeight,
+                            expedition.rewards.tertiaryWeight,
+                            expedition.rewards.entityDiscoveryMultiplier,
+                            expedition.rewards.biomeDiscoveryMultiplier,
+                            expedition.rewards.typeDecayCoefficient,
+                            expedition.rewards.typeDecayExponent,
+                            expedition.rewards.maxPaidPerEntityInstance,
+                            expedition.rewards.maxPaidPerEntityType,
+                            expedition.rewards.maxPaidPerBiomeType,
+                            expedition.rewards.minimumReward,
+                            expedition.rewards.maximumReward
+                    )
+            );
+        }
+
+        public static class Expedition {
+            public Currency currency = new Currency();
+            public EntityValues entityValues = new EntityValues();
+            public Rewards rewards = new Rewards();
+
+            public static class Currency {
+                public String provider = CurrencyConfig.INTERNAL_PROVIDER.toString();
+                public boolean teamShared = false;
+            }
+
+            public static class EntityValues {
+                public double healthWeight = EntityValueConfig.DEFAULT.healthWeight();
+                public double armorWeight = EntityValueConfig.DEFAULT.armorWeight();
+                public double attackWeight = EntityValueConfig.DEFAULT.attackWeight();
+                public double specialWeight = EntityValueConfig.DEFAULT.specialWeight();
+                public long minimumValue = EntityValueConfig.DEFAULT.minimumValue();
+                public long maximumValue = EntityValueConfig.DEFAULT.maximumValue();
+            }
+
+            public static class Rewards {
+                public int algorithmVersion = ScoringConfig.DEFAULT.algorithmVersion();
+                public double secondaryWeight = ScoringConfig.DEFAULT.secondaryWeight();
+                public double tertiaryWeight = ScoringConfig.DEFAULT.tertiaryWeight();
+                public double entityDiscoveryMultiplier = ScoringConfig.DEFAULT.entityDiscoveryMultiplier();
+                public double biomeDiscoveryMultiplier = ScoringConfig.DEFAULT.biomeDiscoveryMultiplier();
+                public double typeDecayCoefficient = ScoringConfig.DEFAULT.typeDecayCoefficient();
+                public double typeDecayExponent = ScoringConfig.DEFAULT.typeDecayExponent();
+                public int maxPaidPerEntityInstance = ScoringConfig.DEFAULT.maxPaidPerEntityInstance();
+                public int maxPaidPerEntityType = ScoringConfig.DEFAULT.maxPaidPerEntityType();
+                public int maxPaidPerBiomeType = ScoringConfig.DEFAULT.maxPaidPerBiomeType();
+                public long minimumReward = ScoringConfig.DEFAULT.minimumReward();
+                public long maximumReward = ScoringConfig.DEFAULT.maximumReward();
+            }
         }
 
         /// Permission levels for various actions that can be taken by players.

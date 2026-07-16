@@ -1,7 +1,15 @@
 .gradle/
 build/
+**/build/
 run/
+runs/
+logs/
+*.log
 
 .idea/
+*.iml
 .vscode/
+.DS_Store
 .env
+.env.*
+!.env.example
