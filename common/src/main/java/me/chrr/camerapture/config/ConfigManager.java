@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class ConfigManager {
-    private static final Gson GSON = new GsonBuilder()
+    static final Gson GSON = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .addSerializationExclusionStrategy(new SkipDeprecatedStrategy())
             .setPrettyPrinting()

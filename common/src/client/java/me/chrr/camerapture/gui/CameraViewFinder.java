@@ -87,12 +87,12 @@ public enum CameraViewFinder {
         }
 
         // Draw a line where the current zoom level is.
-        float zoomProgress = 1f - (PictureTaker.getInstance().zoomLevel - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM);
+        float zoomProgress = 1f - (PictureTaker.getInstance().getZoomLevel() - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM);
         int ty = y + (int) ((float) height * zoomProgress);
         context.fill(x - 10, ty - 1, x, ty + 1, 0xffffffff);
 
         // Show the current zoom level besides the line.
-        String zoomLevel = String.format("%.1fx", PictureTaker.getInstance().zoomLevel);
+        String zoomLevel = String.format("%.1fx", PictureTaker.getInstance().getZoomLevel());
         int textWidth = textRenderer.getWidth(zoomLevel);
         context.drawText(textRenderer, zoomLevel, x - 12 - textWidth, ty - 4, 0xffffffff, false);
     }

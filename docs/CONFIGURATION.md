@@ -1,6 +1,10 @@
 # Configuration
 
-The baseline uses `camerapture.client.json` and `camerapture.server.json`. Server config version 6 adds the `expedition` section while preserving the existing versioned upgrade path. `Config.Server.gameplayConfig()` converts the mutable Gson document into validated immutable domain records before gameplay code consumes it.
+The baseline uses `camerapture.client.json` and `camerapture.server.json`. Client config version 4 replaces `zoomMouseSensitivity` with `minimumZoomSensitivity` (default `0.10`, valid `0.01`–`1.0`) and `zoomSensitivityExponent` (default `0.85`, valid `0.25`–`3.0`). Version 3 values migrate into the new minimum and the deprecated key is omitted on the next save. Loaded values are corrected to safe finite ranges.
+
+The sensitivity curve normalizes the camera FOV modifier from `[0.1, 1.0]` to `[0, 1]`, raises it to the configured exponent, and interpolates from the configured minimum to full sensitivity. Maximum zoom therefore uses the exact floor and no zoom uses `1.0`.
+
+Server config version 6 adds the `expedition` section while preserving the existing versioned upgrade path. `Config.Server.gameplayConfig()` converts the mutable Gson document into validated immutable domain records before gameplay code consumes it.
 
 Implemented server shape (defaults shown):
 

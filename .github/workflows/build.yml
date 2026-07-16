@@ -22,7 +22,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build for all platforms
-        run: ./gradlew buildAll
+        run: ./gradlew buildAll -PdevMods.enabled=false
 
       - uses: actions/upload-artifact@v4
         with:

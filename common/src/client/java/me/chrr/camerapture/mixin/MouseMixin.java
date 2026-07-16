@@ -13,7 +13,8 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public abstract class MouseMixin {
     @ModifyArgs(method = "updateMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;changeLookDirection(DD)V"))
     private void updateMouse(Args args) {
-        if (CameraItem.find(MinecraftClient.getInstance().player, true) != null) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.currentScreen == null && CameraItem.find(client.player, true) != null) {
             float modifier = PictureTaker.getInstance().getSensitivityModifier();
             args.setAll((double) args.get(0) * (double) modifier, (double) args.get(1) * (double) modifier);
         }

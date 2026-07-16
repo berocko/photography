@@ -20,10 +20,13 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.recipe.SpecialRecipeSerializer;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.MinecraftServer;
@@ -36,6 +39,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,6 +60,11 @@ public class Camerapture {
     public static final int CLIENT_SECTION_SIZE = 30_000;
     public static final int SERVER_SECTION_SIZE = 1_000_000;
 
+    public static final Identifier PHOTO_EXPEDITION_TAB_ID = id("photo_expedition");
+    public static final RegistryKey<ItemGroup> PHOTO_EXPEDITION_TAB_KEY =
+            RegistryKey.of(RegistryKeys.ITEM_GROUP, PHOTO_EXPEDITION_TAB_ID);
+    public static final String PHOTO_EXPEDITION_TAB_TRANSLATION_KEY = "itemGroup.camerapture.photo_expedition";
+
     // Camera
     public static Item CAMERA = new CameraItem();
     public static final SoundEvent CAMERA_SHUTTER = SoundEvent.of(id("camera_shutter"));
@@ -73,6 +82,18 @@ public class Camerapture {
             new ScreenHandlerType<>((syncId, playerInventory) -> new AlbumLecternScreenHandler(syncId), FeatureSet.empty());
     public static final SpecialRecipeSerializer<AlbumCloningRecipe> ALBUM_CLONING =
             new SpecialRecipeSerializer<>(AlbumCloningRecipe::new);
+
+    public static List<Item> photoExpeditionItems() {
+        return List.of(CAMERA, ALBUM);
+    }
+
+    public static ItemGroup createPhotoExpeditionTab() {
+        return ItemGroup.create(ItemGroup.Row.TOP, -1)
+                .displayName(Text.translatable(PHOTO_EXPEDITION_TAB_TRANSLATION_KEY))
+                .icon(() -> new ItemStack(CAMERA))
+                .entries((context, entries) -> photoExpeditionItems().forEach(entries::add))
+                .build();
+    }
 
     // Picture Frame
     public static final EntityType<PictureFrameEntity> PICTURE_FRAME =

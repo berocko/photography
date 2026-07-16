@@ -19,7 +19,7 @@ jobs:
           distribution: temurin
 
       - name: Build all loader artifacts
-        run: ./gradlew buildAll --no-daemon
+        run: ./gradlew buildAll -PdevMods.enabled=false --no-daemon
 
       - name: Upload unreviewed artifacts
         uses: actions/upload-artifact@v4

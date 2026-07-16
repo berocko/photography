@@ -17,14 +17,23 @@ public class Config {
 
     /// Client-specific config options.
     public static class Client {
-        public int version = 3;
+        public int version = 4;
 
         public boolean cachePictures = false;
         public boolean saveScreenshot = false;
         public boolean simpleCameraHud = false;
-        public float zoomMouseSensitivity = 0.5f;
+        public float minimumZoomSensitivity = ZoomSensitivityCurve.DEFAULT_MINIMUM;
+        public float zoomSensitivityExponent = ZoomSensitivityCurve.DEFAULT_EXPONENT;
+
+        @DeprecatedConfigOption
+        private float zoomMouseSensitivity = 0.5f;
 
         public void upgrade() {
+            if (this.version < 4) {
+                this.minimumZoomSensitivity = ZoomSensitivityCurve.sanitizeMinimum(this.zoomMouseSensitivity);
+            }
+            this.minimumZoomSensitivity = ZoomSensitivityCurve.sanitizeMinimum(this.minimumZoomSensitivity);
+            this.zoomSensitivityExponent = ZoomSensitivityCurve.sanitizeExponent(this.zoomSensitivityExponent);
             this.version = DEFAULT.client.version;
         }
     }

@@ -4,6 +4,8 @@ import me.chrr.camerapture.ByteCollector;
 import me.chrr.camerapture.Camerapture;
 import me.chrr.camerapture.CameraptureClient;
 import me.chrr.camerapture.item.CameraItem;
+import me.chrr.camerapture.config.Config;
+import me.chrr.camerapture.config.ZoomSensitivityCurve;
 import me.chrr.camerapture.net.serverbound.NewPicturePacket;
 import me.chrr.camerapture.net.serverbound.UploadPartialPicturePacket;
 import me.chrr.camerapture.util.ImageUtil;
@@ -30,7 +32,7 @@ import static me.chrr.camerapture.CameraptureClient.MIN_ZOOM;
 public class PictureTaker {
     private static final PictureTaker INSTANCE = new PictureTaker();
 
-    public float zoomLevel = MIN_ZOOM;
+    private float zoomLevel = MIN_ZOOM;
 
     private boolean hudWasHidden = false;
     private boolean takingPicture = false;
@@ -102,6 +104,7 @@ public class PictureTaker {
         if (activeCamera != null) {
             CameraItem.setActive(activeCamera.stack(), false);
         }
+        this.resetZoom();
 
         // Request a new picture ID from the server.
         Camerapture.NETWORK.sendToServer(new NewPicturePacket());
@@ -157,15 +160,26 @@ public class PictureTaker {
         zoomLevel = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomLevel));
     }
 
+    public void resetZoom() {
+        this.zoomLevel = MIN_ZOOM;
+    }
+
+    public float getZoomLevel() {
+        return this.zoomLevel;
+    }
+
     public float getFovModifier() {
         float zoomProgress = (zoomLevel - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM);
         return 0.1f + 0.9f * (float) Math.pow(1f - zoomProgress, 2.0);
     }
 
     public float getSensitivityModifier() {
-        float zoomProgress = (zoomLevel - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM);
-        float multiplier = 1f - Camerapture.CONFIG_MANAGER.getConfig().client.zoomMouseSensitivity;
-        return 1f - zoomProgress * multiplier;
+        Config.Client config = Camerapture.CONFIG_MANAGER.getConfig().client;
+        return ZoomSensitivityCurve.modifier(
+                this.getFovModifier(),
+                config.minimumZoomSensitivity,
+                config.zoomSensitivityExponent
+        );
     }
 
     public static PictureTaker getInstance() {
