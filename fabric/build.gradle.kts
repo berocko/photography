@@ -32,7 +32,6 @@ val common: Configuration by configurations.creating {
 }
 
 repositories {
-    maven("https://maven.terraformersmc.com/releases/") { content { includeGroup("com.terraformersmc") } }
     maven("https://maven.tr7zw.dev/repository/maven-public/") { content { includeGroup("dev.tr7zw") } }
     ivy("https://cdn.modrinth.com/data") {
         patternLayout { artifact("[organisation]/versions/[revision]/[module](-[classifier]).[ext]") }
@@ -44,7 +43,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${rootProject.prop("fabric", "loaderVersion")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${rootProject.prop("fabric", "apiVersion")}")
 
-    modCompileOnly("com.terraformersmc:modmenu:${rootProject.prop("modmenu", "version")}")
+    modCompileOnly("mOgUt4GM:modmenu-${rootProject.prop("modmenu", "version")}:${rootProject.prop("devMods.fabric", "modMenu")}")
 
     if (rootProject.prop("devMods", "enabled").toBoolean()) {
         "modDevClientRuntimeOnly"("u6dRKJwZ:jei-1.21.1-fabric-19.39.0.368:${rootProject.prop("devMods.fabric", "jei")}")
