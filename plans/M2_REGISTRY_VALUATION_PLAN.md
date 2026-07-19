@@ -4,7 +4,7 @@
 
 - Baseline commit: `9e00e9f504ae6dbadf7f0281bf2ec582bc689dc3`
 - Working branch: `feature/m2-registry-valuation`
-- Status: **进行中**
+- Status: **已完成**
 - In scope: entity/biome registry scans, automatic valuation, data-pack rules, deterministic fingerprints, bounded biome observations, versioned world persistence, administrator diagnostics, and loader lifecycle wiring.
 - Out of scope: photo frustum capture, film, Virtual Gallery, balances, shops, submissions, and map art.
 
@@ -74,7 +74,7 @@ Commands are recorded here only after execution; no planned command is represent
 | `./gradlew :fabric:runServer -PdevMods.enabled=false` | passed: 131 entities, 64 biomes, 6 rules; status/entity/biome/reload/rebuild verified |
 | malformed-rule dedicated-server integration | passed: one invalid JSON resource was skipped with its resource ID, `/reload` completed, six valid rules and zombie value 175 remained active |
 | resource/test-layout/common-import validation | valuation JSON and asset references passed; test layout passed with one plain-JUnit warning; common loader-import scan passed; generic resource-pack validator reports the pre-existing absence of standalone `pack.mcmeta` |
-| GitHub Actions | pending |
+| GitHub Actions | passed: Build run `29686896221`, including clean dual-loader build, 48 common tests, and artifact upload |
 
 ## Completion checklist
 
@@ -87,7 +87,7 @@ Commands are recorded here only after execution; no planned command is represent
 - [x] Administrator status/rebuild/query/dump/reset commands work.
 - [x] Unit and runtime integration coverage pass.
 - [x] Both loaders build and dedicated servers start.
-- [ ] Documentation and CI match the implementation (documentation and local CI command verified; GitHub Actions pending).
+- [x] Documentation and CI match the implementation.
 
 ## Failures and remaining issues
 

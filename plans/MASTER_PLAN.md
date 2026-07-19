@@ -8,7 +8,7 @@ Status values: **未开始**, **进行中**, **已完成**, **被阻塞**. A mil
 |---|---|---|---|
 | 0 Upstream audit and baseline | 已完成 | Pin upstream, audit capture/storage/network/modules, baseline builds, docs and license notices | JDK 21 task/build, NeoForge client/server smoke, Fabric artifact build passed |
 | 1 Domain model and configuration | 已完成 | Photo/scene/score/currency models, config schema, data-pack codecs, pure scoring, unit tests | 19 JUnit tests and clean dual-loader build passed |
-| 2 Registry scan and valuation | 进行中 | Entity/biome scans, fingerprints, overrides, bounded observation cache | Execution tracked in `plans/M2_REGISTRY_VALUATION_PLAN.md` |
+| 2 Registry scan and valuation | 已完成 | Entity/biome scans, fingerprints, overrides, bounded observation cache | 48 JUnit tests, clean dual-loader build, both dedicated-server smokes, restart persistence, malformed-rule isolation, and GitHub Actions passed |
 | 3 Scene snapshot and film save | 未开始 | Server frustum validation, preview/save split, film rollback, thumbnails | First playable slice |
 | 4 Virtual Gallery | 未开始 | Persistent ownership, paging, thumbnails, filters, capacity | — |
 | 5 Submission and credits | 未开始 | Internal/item currency, atomic submission, dedupe and decay | — |
