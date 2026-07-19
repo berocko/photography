@@ -30,6 +30,9 @@
 8. Currency, inventory, submission, and map-art mutations must be server-side and atomic or explicitly compensating.
 9. Do not replace stable Camerapture capture, image encoding, transfer, storage, or rendering without an audit and focused regression tests.
 10. Do not commit secrets, local absolute paths, run directories, logs, or build outputs.
+11. JEI, Mouse Tweaks, Cloth Config, Mod Menu, Jade, First Person Model, and companion development mods are local client-run tools only; never package them or add them to server/formal runtime dependencies.
+12. Camerapture items belong in the dedicated Photo Expedition creative tab in the explicit common allow-list order; do not append them to vanilla tabs or expose Picture without a separate product decision.
+13. Map-art source pixels, ownership, pricing, palette output, map IDs, allocation, delivery, persistence, and rollback are server-authoritative. Client pixels are never accepted as map-art truth.
 
 ## Workflow
 
@@ -39,4 +42,3 @@
 - Validate resource references whenever assets or data JSON change.
 - Do not commit, push, force-push, publish to Modrinth/CurseForge, or create a GitHub Release unless the owner explicitly authorizes that exact action.
 - Never fabricate build, launch, test, or GameTest results.
-

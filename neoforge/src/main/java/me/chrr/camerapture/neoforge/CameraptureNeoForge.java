@@ -15,7 +15,6 @@ import me.chrr.camerapture.net.serverbound.NewPicturePacket;
 import me.chrr.camerapture.net.serverbound.RequestDownloadPacket;
 import me.chrr.camerapture.net.clientbound.SyncConfigPacket;
 import me.chrr.camerapture.net.serverbound.UploadPartialPicturePacket;
-import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.StatFormatter;
@@ -25,7 +24,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -85,6 +83,8 @@ public class CameraptureNeoForge {
                 registry.register(Camerapture.id("picture_data"), Camerapture.PICTURE_DATA));
         event.register(RegistryKeys.DATA_COMPONENT_TYPE, registry ->
                 registry.register(Camerapture.id("camera_active"), Camerapture.CAMERA_ACTIVE));
+        event.register(RegistryKeys.ITEM_GROUP, registry ->
+                registry.register(Camerapture.PHOTO_EXPEDITION_TAB_ID, Camerapture.createPhotoExpeditionTab()));
     }
 
     @SubscribeEvent
@@ -101,14 +101,6 @@ public class CameraptureNeoForge {
         networkAdapter.registerClientBound(registrar, DownloadPartialPicturePacket.class, DownloadPartialPicturePacket.NET_CODEC);
 
         Camerapture.registerPacketHandlers();
-    }
-
-    @SubscribeEvent
-    public void fillCreativeTab(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == ItemGroups.TOOLS) {
-            event.add(Camerapture.CAMERA);
-            event.add(Camerapture.ALBUM);
-        }
     }
 
     private static class ServerEvents {

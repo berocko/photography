@@ -14,7 +14,8 @@ public class MouseMixin {
     /// If we have an active camera, scroll to zoom instead.
     @Inject(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;scrollInHotbar(D)V"), cancellable = true)
     public void onScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
-        if (CameraItem.find(MinecraftClient.getInstance().player, true) != null) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.currentScreen == null && CameraItem.find(client.player, true) != null) {
             PictureTaker.getInstance().zoom((float) (vertical / 4f));
             ci.cancel();
         }

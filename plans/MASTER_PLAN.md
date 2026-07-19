@@ -17,6 +17,12 @@ Status values: **未开始**, **进行中**, **已完成**, **被阻塞**. A mil
 | 8 Multiloader completion | 未开始 | Feature parity and dual-loader client/server smoke tests | — |
 | 9 CI and release preparation | 未开始 | Java 21 matrix, unit/GameTest, artifacts, license/secret checks | Publishing remains prohibited |
 
+## Cross-milestone camera UX and developer tooling — 已完成
+
+This bounded branch improves the inherited camera zoom curve/config migration, registers a loader-parity Photo Expedition creative tab, and isolates pinned optional compatibility/development mods to local client runs. It also audits the current Album/Picture screens and records the future server-authoritative M7 design. It does not advance Gallery, currency, shop, or map-art milestone status.
+
+Implementation and observed verification results are tracked in `plans/UX_AND_DEVTOOLS_PLAN.md`. Clean dual-loader artifacts and 27 JUnit tests passed; both clients loaded the isolated development tools, and both dedicated servers reached `Done` with those tools disabled. Interactive UX checks remain manual. M7 remains **未开始** because no map-art gameplay or placeholder UI is added.
+
 ## Milestone 0 — 已完成
 
 ### Actual work

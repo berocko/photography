@@ -17,9 +17,7 @@ import me.chrr.camerapture.net.clientbound.SyncConfigPacket;
 import me.chrr.camerapture.net.serverbound.UploadPartialPicturePacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.stat.StatFormatter;
@@ -38,7 +36,6 @@ public class CameraptureFabric implements ModInitializer {
     public void registerContent() {
         // Camera
         Registry.register(Registries.ITEM, CameraItem.KEY, Camerapture.CAMERA);
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> content.add(Camerapture.CAMERA));
         Registry.register(Registries.SOUND_EVENT, Camerapture.CAMERA_SHUTTER.getId(), Camerapture.CAMERA_SHUTTER);
 
         Registry.register(Registries.CUSTOM_STAT, "pictures_taken", Camerapture.PICTURES_TAKEN);
@@ -50,7 +47,6 @@ public class CameraptureFabric implements ModInitializer {
 
         // Album
         Registry.register(Registries.ITEM, AlbumItem.KEY, Camerapture.ALBUM);
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(content -> content.add(Camerapture.ALBUM));
         Registry.register(Registries.SCREEN_HANDLER, Camerapture.id("album"), Camerapture.ALBUM_SCREEN_HANDLER);
         Registry.register(Registries.SCREEN_HANDLER, Camerapture.id("album_lectern"), Camerapture.ALBUM_LECTERN_SCREEN_HANDLER);
         Registry.register(Registries.RECIPE_SERIALIZER, Camerapture.id("album_cloning"), Camerapture.ALBUM_CLONING);
@@ -62,6 +58,9 @@ public class CameraptureFabric implements ModInitializer {
         // Data components
         Registry.register(Registries.DATA_COMPONENT_TYPE, Camerapture.id("picture_data"), Camerapture.PICTURE_DATA);
         Registry.register(Registries.DATA_COMPONENT_TYPE, Camerapture.id("camera_active"), Camerapture.CAMERA_ACTIVE);
+
+        Registry.register(Registries.ITEM_GROUP, Camerapture.PHOTO_EXPEDITION_TAB_ID,
+                Camerapture.createPhotoExpeditionTab());
     }
 
     public void registerPackets() {

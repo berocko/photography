@@ -106,8 +106,11 @@ public class CameraptureClientFabric implements ClientModInitializer {
         // Clear cache and reset the picture taker configuration when logging out of a world.
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             ClientPictureStore.getInstance().clear();
+            PictureTaker.getInstance().resetZoom();
             CameraptureClient.syncedConfig = SyncedConfig.fromServerConfig(Camerapture.CONFIG_MANAGER.getConfig().server);
         });
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
+                PictureTaker.getInstance().resetZoom());
 
         // Process any received pictures once per tick.
         ClientTickEvents.START_CLIENT_TICK.register((world) ->

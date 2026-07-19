@@ -168,7 +168,13 @@ public class CameraptureClientNeoForge {
         @SubscribeEvent
         public void onDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
             ClientPictureStore.getInstance().clear();
+            PictureTaker.getInstance().resetZoom();
             CameraptureClient.syncedConfig = SyncedConfig.fromServerConfig(Camerapture.CONFIG_MANAGER.getConfig().server);
+        }
+
+        @SubscribeEvent
+        public void onConnect(ClientPlayerNetworkEvent.LoggingIn event) {
+            PictureTaker.getInstance().resetZoom();
         }
 
         /// Hide the hand when the player is holding an active camera.
@@ -188,7 +194,7 @@ public class CameraptureClientNeoForge {
             if (camera != null) {
                 event.setCanceled(true);
             } else {
-                PictureTaker.getInstance().zoomLevel = CameraptureClient.MIN_ZOOM;
+                PictureTaker.getInstance().resetZoom();
                 return;
             }
 
@@ -200,7 +206,8 @@ public class CameraptureClientNeoForge {
         /// If we have an active camera, scroll to zoom instead.
         @SubscribeEvent
         public void onScroll(InputEvent.MouseScrollingEvent event) {
-            if (CameraItem.find(MinecraftClient.getInstance().player, true) != null) {
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client.currentScreen == null && CameraItem.find(client.player, true) != null) {
                 PictureTaker.getInstance().zoom((float) (event.getScrollDeltaY() / 4f));
                 event.setCanceled(true);
             }

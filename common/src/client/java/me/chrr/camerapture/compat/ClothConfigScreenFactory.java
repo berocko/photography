@@ -61,13 +61,25 @@ public enum ClothConfigScreenFactory {
                 .build());
 
         client.add(builder.startIntSlider(
-                        Text.translatable("config.camerapture.option.zoom_mouse_sensitivity"),
-                        (int) (config.client.zoomMouseSensitivity * 100f),
-                        10, 100
+                        Text.translatable("config.camerapture.option.minimum_zoom_sensitivity"),
+                        Math.round(config.client.minimumZoomSensitivity * 100f),
+                        1, 100
                 )
-                .setDefaultValue((int) (Config.DEFAULT.client.zoomMouseSensitivity * 100f))
+                .setDefaultValue(Math.round(Config.DEFAULT.client.minimumZoomSensitivity * 100f))
                 .setTextGetter((value) -> Text.of(value + "%"))
-                .setSaveConsumer((value) -> config.client.zoomMouseSensitivity = (float) value / 100f)
+                .setTooltip(Text.translatable("config.camerapture.option.minimum_zoom_sensitivity.tooltip"))
+                .setSaveConsumer((value) -> config.client.minimumZoomSensitivity = (float) value / 100f)
+                .build());
+
+        client.add(builder.startFloatField(
+                        Text.translatable("config.camerapture.option.zoom_sensitivity_exponent"),
+                        config.client.zoomSensitivityExponent
+                )
+                .setDefaultValue(Config.DEFAULT.client.zoomSensitivityExponent)
+                .setMin(0.25f)
+                .setMax(3.0f)
+                .setTooltip(Text.translatable("config.camerapture.option.zoom_sensitivity_exponent.tooltip"))
+                .setSaveConsumer((value) -> config.client.zoomSensitivityExponent = value)
                 .build());
 
         return client.build();

@@ -31,7 +31,7 @@ public abstract class InGameHudMixin {
         if (camera != null) {
             ci.cancel();
         } else {
-            PictureTaker.getInstance().zoomLevel = CameraptureClient.MIN_ZOOM;
+            PictureTaker.getInstance().resetZoom();
             return;
         }
 
