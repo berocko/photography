@@ -22,14 +22,20 @@ import net.minecraft.stat.Stats;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import me.chrr.camerapture.registry.ValuationCommands;
+import me.chrr.camerapture.registry.ValuationRuntime;
 
 @Mod(Camerapture.MOD_ID)
 public class CameraptureNeoForge {
@@ -115,11 +121,31 @@ public class CameraptureNeoForge {
         @SubscribeEvent
         public void onServerStarted(ServerStartedEvent event) {
             DownloadQueue.getInstance().start(Camerapture.CONFIG_MANAGER.getConfig().server.msPerPicture);
+            ValuationRuntime.start(event.getServer(), ModList.get().getMods().stream()
+                    .filter(info -> !info.getModId().startsWith("generated_"))
+                    .map(info -> info.getModId() + "@" + info.getVersion())
+                    .toList());
+        }
+
+        @SubscribeEvent
+        public void onAddReloadListeners(AddReloadListenerEvent event) {
+            event.addListener(ValuationRuntime.reloadListener());
+        }
+
+        @SubscribeEvent
+        public void onRegisterCommands(RegisterCommandsEvent event) {
+            ValuationCommands.register(event.getDispatcher());
+        }
+
+        @SubscribeEvent
+        public void onServerTick(ServerTickEvent.Post event) {
+            ValuationRuntime.tick(event.getServer());
         }
 
         /// When the server stops, we also stop the timer.
         @SubscribeEvent
         public void onServerStopping(ServerStoppingEvent event) {
+            ValuationRuntime.stop(event.getServer());
             DownloadQueue.getInstance().stop();
         }
     }

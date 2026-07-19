@@ -20,3 +20,5 @@ Later integration coverage follows the relevant feature: film consume/refund, du
 Camera UX adds pure curve tests for exact no-zoom/full-zoom endpoints, monotonicity, minimum/exponent correction, and middle-zoom behavior. Client smoke tests confirm development mods load without asserting mouse feel or GUI interaction; scroll capture with open screens, equal X/Y scaling, tab order, JEI, and Mouse Tweaks remain explicit manual checks unless a person performs them.
 
 Map-art implementation is absent. Its required future server/transaction/restart test matrix is listed in `docs/MAP_ART_DESIGN.md` and must not be reported as passing before M7 exists.
+
+Milestone 2 adds pure tests for fingerprint determinism/change detection, safe automatic-value fallbacks, selector priority, isolated rule errors and failed-reload retention, Bloom-filter memory/dimension-aware dedupe, smoothing/clamps, and cache schema/corruption behavior. Runtime smoke uses both dedicated servers to scan vanilla registries and execute status/entity/biome/reload/rebuild commands. No test or scanner constructs an entity merely to inspect attributes.

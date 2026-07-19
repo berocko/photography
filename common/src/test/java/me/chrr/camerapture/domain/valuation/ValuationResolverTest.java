@@ -50,6 +50,17 @@ class ValuationResolverTest {
     }
 
     @Test
+    void higherPriorityWinsWithinSameSelector() {
+        ValuationRule low = new ValuationRule(ValuationRule.SelectorKind.EXACT, DRAGON.toString(),
+                ValuationRule.Mode.OVERRIDE, 10, 1, true, 1);
+        ValuationRule high = new ValuationRule(ValuationRule.SelectorKind.EXACT, DRAGON.toString(),
+                ValuationRule.Mode.OVERRIDE, 20, 1, true, 2);
+        assertEquals(20, ValuationResolver.resolve(
+                DRAGON, Set.of(), List.of(high, low), OptionalLong.empty(), OptionalLong.empty(), 1
+        ));
+    }
+
+    @Test
     void dataPackCodecParsesDocumentedOverrideShape() {
         ValuationRule decoded = ValuationRule.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString("""
                 {

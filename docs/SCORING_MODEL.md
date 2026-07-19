@@ -6,6 +6,8 @@ Entity auto-value uses compressed health, armor, attack, and special scores mult
 
 Precedence is exact object override → tag/namespace rule → runtime observation → automatic attributes → global default. Disabled entries produce no reward.
 
+Milestone 2 supplies these inputs from the live server registries. Living automatic values use registered default max-health, armor, and attack-damage containers without entity construction. Missing attributes are zero-valued with a structured fallback status. Biome runtime rarity uses bounded world observations, remains neutral below the configured minimum sample count, and is clamped before entering the Catalog.
+
 For up to three visible entities:
 
 ```text

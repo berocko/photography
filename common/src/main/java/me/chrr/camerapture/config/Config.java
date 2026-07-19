@@ -7,6 +7,9 @@ import me.chrr.camerapture.domain.config.CurrencyConfig;
 import me.chrr.camerapture.domain.config.EntityValueConfig;
 import me.chrr.camerapture.domain.config.GameplayConfig;
 import me.chrr.camerapture.domain.config.ScoringConfig;
+import me.chrr.camerapture.domain.config.RegistryScanConfig;
+import me.chrr.camerapture.domain.config.BiomeObservationConfig;
+import me.chrr.camerapture.domain.config.ValuationDebugConfig;
 import net.minecraft.util.Identifier;
 
 public class Config {
@@ -40,7 +43,7 @@ public class Config {
 
     /// Server-specific config options.
     public static class Server {
-        public int version = 6;
+        public int version = 7;
 
         public int maxImageBytes = 500_000;
         public int maxImageResolution = 1920;
@@ -61,6 +64,12 @@ public class Config {
             if (this.expedition == null) {
                 this.expedition = new Expedition();
             }
+            if (this.expedition.currency == null) this.expedition.currency = new Expedition.Currency();
+            if (this.expedition.entityValues == null) this.expedition.entityValues = new Expedition.EntityValues();
+            if (this.expedition.rewards == null) this.expedition.rewards = new Expedition.Rewards();
+            if (this.expedition.registryScan == null) this.expedition.registryScan = new Expedition.RegistryScan();
+            if (this.expedition.biomeObservation == null) this.expedition.biomeObservation = new Expedition.BiomeObservation();
+            if (this.expedition.valuation == null) this.expedition.valuation = new Expedition.Valuation();
 
             this.version = DEFAULT.server.version;
         }
@@ -91,6 +100,28 @@ public class Config {
                             expedition.rewards.maxPaidPerBiomeType,
                             expedition.rewards.minimumReward,
                             expedition.rewards.maximumReward
+                    ),
+                    new RegistryScanConfig(
+                            expedition.registryScan.enabled,
+                            expedition.registryScan.rebuildOnFingerprintChange,
+                            expedition.registryScan.includeNonLivingEntities,
+                            expedition.registryScan.globalEntityDefault,
+                            expedition.registryScan.globalBiomeDefault,
+                            expedition.registryScan.hostileMultiplier
+                    ),
+                    new BiomeObservationConfig(
+                            expedition.biomeObservation.enabled,
+                            expedition.biomeObservation.intervalTicks,
+                            expedition.biomeObservation.minimumSamples,
+                            expedition.biomeObservation.smoothingAlpha,
+                            expedition.biomeObservation.minimumMultiplier,
+                            expedition.biomeObservation.maximumMultiplier,
+                            expedition.biomeObservation.filterBits
+                    ),
+                    new ValuationDebugConfig(
+                            expedition.valuation.logUnknownEntities,
+                            expedition.valuation.logEmptyTags,
+                            expedition.valuation.debugCommands
                     )
             );
         }
@@ -99,6 +130,9 @@ public class Config {
             public Currency currency = new Currency();
             public EntityValues entityValues = new EntityValues();
             public Rewards rewards = new Rewards();
+            public RegistryScan registryScan = new RegistryScan();
+            public BiomeObservation biomeObservation = new BiomeObservation();
+            public Valuation valuation = new Valuation();
 
             public static class Currency {
                 public String provider = CurrencyConfig.INTERNAL_PROVIDER.toString();
@@ -127,6 +161,31 @@ public class Config {
                 public int maxPaidPerBiomeType = ScoringConfig.DEFAULT.maxPaidPerBiomeType();
                 public long minimumReward = ScoringConfig.DEFAULT.minimumReward();
                 public long maximumReward = ScoringConfig.DEFAULT.maximumReward();
+            }
+
+            public static class RegistryScan {
+                public boolean enabled = RegistryScanConfig.DEFAULT.enabled();
+                public boolean rebuildOnFingerprintChange = RegistryScanConfig.DEFAULT.rebuildOnFingerprintChange();
+                public boolean includeNonLivingEntities = RegistryScanConfig.DEFAULT.includeNonLivingEntities();
+                public long globalEntityDefault = RegistryScanConfig.DEFAULT.globalEntityDefault();
+                public long globalBiomeDefault = RegistryScanConfig.DEFAULT.globalBiomeDefault();
+                public double hostileMultiplier = RegistryScanConfig.DEFAULT.hostileMultiplier();
+            }
+
+            public static class BiomeObservation {
+                public boolean enabled = BiomeObservationConfig.DEFAULT.enabled();
+                public int intervalTicks = BiomeObservationConfig.DEFAULT.intervalTicks();
+                public long minimumSamples = BiomeObservationConfig.DEFAULT.minimumSamples();
+                public double smoothingAlpha = BiomeObservationConfig.DEFAULT.smoothingAlpha();
+                public double minimumMultiplier = BiomeObservationConfig.DEFAULT.minimumMultiplier();
+                public double maximumMultiplier = BiomeObservationConfig.DEFAULT.maximumMultiplier();
+                public int filterBits = BiomeObservationConfig.DEFAULT.filterBits();
+            }
+
+            public static class Valuation {
+                public boolean logUnknownEntities = ValuationDebugConfig.DEFAULT.logUnknownEntities();
+                public boolean logEmptyTags = ValuationDebugConfig.DEFAULT.logEmptyTags();
+                public boolean debugCommands = ValuationDebugConfig.DEFAULT.debugCommands();
             }
         }
 

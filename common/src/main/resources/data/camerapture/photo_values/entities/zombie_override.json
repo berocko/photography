@@ -1,0 +1,7 @@
+{
+  "selector": "exact",
+  "target": "minecraft:zombie",
+  "mode": "override",
+  "base_value": 175,
+  "priority": 10
+}

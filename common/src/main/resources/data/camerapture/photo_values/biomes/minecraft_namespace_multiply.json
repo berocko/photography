@@ -1,0 +1,7 @@
+{
+  "selector": "namespace",
+  "target": "minecraft",
+  "mode": "multiply",
+  "multiplier": 1.05,
+  "priority": 0
+}

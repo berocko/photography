@@ -35,6 +35,14 @@ Milestone 1 adds immutable schema-versioned records under `domain/photo`, valida
 
 Loader modules own registration, lifecycle events, platform persistence hooks, packet registration, and client integration. Optional integrations load only through guarded adapters and may not reference absent classes during common class loading.
 
+## Milestone 2 valuation runtime
+
+Fabric and NeoForge register equivalent server start/stop, data reload, end-tick, and command callbacks. Those callbacks delegate to one common `ServerValuationManager`. The manager safely reads `DefaultAttributeRegistry` without calling `EntityType#create`, scans dynamic biomes from the active server registry manager, and publishes a `RegistryScanSnapshot` plus `ValuationCatalog` through one atomic reference.
+
+The world cache is vanilla `PersistentState` named `camerapture_valuation_cache` in the primary overworld. Schema version 1 stores primitive IDs/values, fingerprint/rule digests, automatic caches, bounded biome counts/filter bytes, and timestamps. A fixed Bloom filter hashes dimension plus chunk coordinates; no unbounded chunk set is retained. Fingerprint changes prune absent registry IDs while preserving compatible observation counts.
+
+Rules are prepared and validated per resource, then a complete immutable Catalog is built before publication. Data-pack-only reloads reuse the existing attribute scan. Full attribute scans occur at server start/cache creation, fingerprint rebuild, or administrator rebuild, never per player, tick, or photo.
+
 ## Known baseline debt
 
 - Upload reservations are global UUIDs rather than player-bound sessions and have no timeout.
