@@ -1,0 +1,6 @@
+{
+  "selector": "exact",
+  "target": "camerapture:picture_frame",
+  "mode": "disable",
+  "priority": 100
+}

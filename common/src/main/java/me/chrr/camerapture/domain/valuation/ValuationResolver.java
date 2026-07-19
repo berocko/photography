@@ -5,6 +5,7 @@ import net.minecraft.util.Identifier;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.OptionalLong;
+import java.util.Optional;
 import java.util.Set;
 
 /** Implements exact > tag > namespace > runtime > automatic > global precedence. */
@@ -20,18 +21,30 @@ public final class ValuationResolver {
             OptionalLong automaticValue,
             long globalDefault
     ) {
+        return resolveDetailed(id, tags, rules, runtimeValue, automaticValue, globalDefault).value();
+    }
+
+    public static Resolution resolveDetailed(
+            Identifier id,
+            Set<Identifier> tags,
+            Collection<ValuationRule> rules,
+            OptionalLong runtimeValue,
+            OptionalLong automaticValue,
+            long globalDefault
+    ) {
         if (globalDefault < 0 || runtimeValue.stream().anyMatch(value -> value < 0)
                 || automaticValue.stream().anyMatch(value -> value < 0)) {
             throw new IllegalArgumentException("valuation inputs must be non-negative");
         }
         long fallback = runtimeValue.orElseGet(() -> automaticValue.orElse(globalDefault));
-        return rules.stream()
+        String fallbackSource = runtimeValue.isPresent() ? "runtime"
+                : automaticValue.isPresent() ? "automatic" : "global";
+        Optional<ValuationRule> matched = rules.stream()
                 .filter(ValuationRule::enabled)
                 .filter(rule -> matches(rule, id, tags))
                 .max(Comparator.comparingInt(ValuationResolver::precedence)
-                        .thenComparingInt(ValuationRule::priority))
-                .map(rule -> apply(rule, fallback))
-                .orElse(fallback);
+                        .thenComparingInt(ValuationRule::priority));
+        return new Resolution(matched.map(rule -> apply(rule, fallback)).orElse(fallback), matched, fallbackSource);
     }
 
     private static boolean matches(ValuationRule rule, Identifier id, Set<Identifier> tags) {
@@ -42,7 +55,7 @@ public final class ValuationResolver {
         };
     }
 
-    private static int precedence(ValuationRule rule) {
+    public static int precedence(ValuationRule rule) {
         return switch (rule.selector()) {
             case EXACT -> 3;
             case TAG -> 2;
@@ -65,5 +78,8 @@ public final class ValuationResolver {
 
     private static long boundedRound(double value) {
         return !Double.isFinite(value) || value >= Long.MAX_VALUE ? Long.MAX_VALUE : Math.round(value);
+    }
+
+    public record Resolution(long value, Optional<ValuationRule> matchedRule, String fallbackSource) {
     }
 }

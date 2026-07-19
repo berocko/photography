@@ -17,6 +17,13 @@ import me.chrr.camerapture.net.clientbound.SyncConfigPacket;
 import me.chrr.camerapture.net.serverbound.UploadPartialPicturePacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.loader.api.FabricLoader;
+import me.chrr.camerapture.registry.ValuationCommands;
+import me.chrr.camerapture.registry.ValuationRuntime;
+import net.minecraft.resource.ResourceType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -31,6 +38,10 @@ public class CameraptureFabric implements ModInitializer {
         this.registerContent();
         this.registerPackets();
         this.registerEvents();
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA)
+                .registerReloadListener(new FabricValuationReloadListener());
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+                ValuationCommands.register(dispatcher));
     }
 
     public void registerContent() {
@@ -85,9 +96,18 @@ public class CameraptureFabric implements ModInitializer {
         });
 
         // Run the download queue while the server is started.
-        ServerLifecycleEvents.SERVER_STARTED.register(server ->
-                DownloadQueue.getInstance().start(Camerapture.CONFIG_MANAGER.getConfig().server.msPerPicture));
-        ServerLifecycleEvents.SERVER_STOPPING.register(server ->
-                DownloadQueue.getInstance().stop());
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            DownloadQueue.getInstance().start(Camerapture.CONFIG_MANAGER.getConfig().server.msPerPicture);
+            ValuationRuntime.start(server, FabricLoader.getInstance().getAllMods().stream()
+                    .filter(container -> !container.getMetadata().getId().startsWith("generated_"))
+                    .map(container -> container.getMetadata().getId() + "@"
+                            + container.getMetadata().getVersion().getFriendlyString())
+                    .toList());
+        });
+        ServerTickEvents.END_SERVER_TICK.register(ValuationRuntime::tick);
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+            ValuationRuntime.stop(server);
+            DownloadQueue.getInstance().stop();
+        });
     }
 }

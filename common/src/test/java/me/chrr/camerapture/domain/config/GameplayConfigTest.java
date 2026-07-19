@@ -33,4 +33,27 @@ class GameplayConfigTest {
         ));
         assertTrue(result.error().isPresent());
     }
+
+    @Test
+    void decodesMilestoneTwoSettings() {
+        GameplayConfig decoded = GameplayConfig.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString("""
+                {
+                  "registry_scan": {"global_entity_default": 25},
+                  "biome_observation": {"interval_ticks": 40, "filter_bits": 2048},
+                  "valuation": {"debug_commands": false}
+                }
+                """)).getOrThrow();
+        assertEquals(25, decoded.registryScan().globalEntityDefault());
+        assertEquals(40, decoded.biomeObservation().intervalTicks());
+        assertEquals(2048, decoded.biomeObservation().filterBits());
+        assertEquals(false, decoded.valuation().debugCommands());
+    }
+
+    @Test
+    void rejectsUnboundedOrMisalignedObservationFilter() {
+        assertTrue(GameplayConfig.CODEC.parse(
+                JsonOps.INSTANCE,
+                JsonParser.parseString("{\"biome_observation\":{\"filter_bits\":1025}}")
+        ).error().isPresent());
+    }
 }

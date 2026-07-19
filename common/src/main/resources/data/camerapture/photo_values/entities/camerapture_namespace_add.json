@@ -1,0 +1,7 @@
+{
+  "selector": "namespace",
+  "target": "camerapture",
+  "mode": "add",
+  "base_value": 5,
+  "priority": 0
+}

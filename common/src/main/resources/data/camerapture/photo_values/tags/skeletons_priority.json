@@ -1,0 +1,8 @@
+{
+  "object_type": "entity",
+  "selector": "tag",
+  "target": "minecraft:skeletons",
+  "mode": "add",
+  "base_value": 25,
+  "priority": 20
+}

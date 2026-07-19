@@ -1,0 +1,7 @@
+{
+  "selector": "tag",
+  "target": "minecraft:is_overworld",
+  "mode": "multiply",
+  "multiplier": 1.1,
+  "priority": 5
+}

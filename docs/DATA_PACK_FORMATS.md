@@ -1,6 +1,6 @@
 # Data-Pack Formats
 
-Roots reserved for reload listeners are `data/camerapture/photo_values/entities/`, `biomes/`, `tags/`, and `data/camerapture/shops/`. `ValuationRule.CODEC` is implemented in Milestone 1; registry reload wiring lands in Milestone 2.
+Valuation reload roots are `data/<namespace>/photo_values/entities/`, `biomes/`, and `tags/`. `ValuationRule.CODEC`, per-resource error isolation, registry validation, and atomic catalog replacement are implemented. `data/camerapture/shops/` remains reserved for Milestone 6.
 
 ```json
 {
@@ -18,4 +18,4 @@ Roots reserved for reload listeners are `data/camerapture/photo_values/entities/
 
 Resolution is deterministic: exact object > tag > namespace > runtime observation > automatic attributes > global default. Priority breaks ties within a selector level. Addition and multiplication saturate rather than overflowing.
 
-Parsing uses Minecraft Codecs. Milestone 2 must add per-resource error reporting, registry existence checks, built-in examples, and reload tests. A bad entry will be skipped with its resource path and Codec error instead of aborting reload. Shop offer codecs remain Milestone 6 scope.
+Parsing uses Minecraft Codecs. A bad entry is skipped with its resource path and Codec/validation error instead of aborting reload. `tags/` resources add `object_type: entity|biome`; see `docs/VALUATION_DATA_PACK.md` for the complete contract and built-in examples. Shop offer codecs remain Milestone 6 scope.
